@@ -11,7 +11,7 @@ sphere.prototype = new worldObject;
 	}
 
 	sphere.prototype.initBuffers = function()
-	{	
+	{
 		//il manque le code des normales à ajouter!
 		vertices = [];
         textureCoords = [];

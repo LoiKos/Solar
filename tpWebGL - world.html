@@ -50,7 +50,9 @@
     var pMatrix = mat4.create();
 	
 	//textures
-	var texture0;
+	var textureEarth;
+	var textureMoon;
+	var textureStars;
 		
 	//interaction
 	var drawStyle;
@@ -78,7 +80,7 @@
 
 	//world
 	var objects = [];
-	var rootObject;
+	var Sun;
 	
 	//geometry
 	var pasLat = 3;
@@ -204,21 +206,29 @@
 	//TEXTURES
 	function initTexture()
 	{
-		texture0 = gl.createTexture();
-		texture0.image = new Image();
-		texture0.image.onload = function()
+		textureEarth = gl.createTexture();
+		textureEarth.image = new Image();
+		textureEarth.image.onload = function()
 		{
-		  handleLoadedTexture(texture0)
+		  handleLoadedTexture(textureEarth)
 		}
 
-    texture0.image.src = "./img/moon.gif"; // note : croos origin problem with chrome outside webserver
-	texture0.image.src = "./img/earth.jpg"; // note : croos origin problem with chrome outside webserver
+		textureStars = gl.createTexture();
+		textureStars.image = new Image();
+		textureStars.image.onload = function()
+		{
+		  handleLoadedTexture(textureStars)
+		}
+
+    //textureMoon.image.src = "./img/moon.gif"; // note : croos origin problem with chrome outside webserver
+	textureEarth.image.src = "./img/earth.jpg"; // note : croos origin problem with chrome outside webserver
+	textureStars.image.src = "./img/stars.jpg";
   }
 
-	function handleLoadedTexture(texture)
+	function handleLoadedTexture(texture,nom)
 	{
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-		gl.bindTexture(gl.TEXTURE_2D, texture0);
+		gl.bindTexture(gl.TEXTURE_2D, texture);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
@@ -255,24 +265,35 @@
 		mat4.rotate(mvMatrix, -camHeight, [1, 0, 0]);
 		
 		mat4.translate(mvMatrix, [camX, 0.0, camZ]);
-		mat4.translate(mvMatrix, [0, 0.0, -10.0]);
+		mat4.translate(mvMatrix, [0, 0.0, -25.0]);
 		
 		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, texture0);
+		gl.bindTexture(gl.TEXTURE_2D, textureStars);
 		gl.uniform1i(shaderProgram.samplerUniform, 0);
 
-		rootObject.draw();
+		Stars.draw();
+
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, textureEarth);
+		gl.uniform1i(shaderProgram.samplerUniform, 0);
+
+		Sun.draw();
     }
 
 	function initWorldObjects()
 	{ 
 		var obj = 12; 
 
-		rootObject = new triangle(null);
-		rootObject.translate([0,-1,0.5]);
-		objects.push(rootObject); 
+		Stars = new sphere(null);
+		Stars.translate([0,0,0]);
+		Stars.scale([70,70,70]);
+		objects.push(Stars);
+
+		Sun = new sphere(null);
+		Sun.translate([0,0,0]);
+		objects.push(Sun);
 		
-		for (var i=0; i < obj; i++)
+		/*for (var i=0; i < obj; i++)
 		{ 
 			var newObject = new triangle(rootObject);
 			objects.push(newObject);
@@ -287,10 +308,17 @@
 		
 		newObject = new sphere(rootObject);
 		objects.push(newObject);
-		newObject.translate([2,2,0]);
-		
-		
-		return rootObject;
+		newObject.translate([2,2,0]);*/
+
+		var EarthPlanet = new sphere(Sun);
+		objects.push(EarthPlanet);
+		EarthPlanet.translate([6,0,0]);
+
+		var MoonPlanet = new sphere(EarthPlanet);
+		objects.push(MoonPlanet);
+		MoonPlanet.translate([3,0,0]);
+
+		return Sun;
 	}
 	
     function animate()
@@ -305,7 +333,7 @@
             rSquare += (75 * elapsed) / 1000.0;
 			rSphere += (50 * elapsed) / 1000.0;
         }
-		rootObject.animate(elapsed);
+		Sun.animate(elapsed);
 		lastTime = timeNow;
     }
 
@@ -322,7 +350,7 @@
 		//webGL
         initGL(canvas);
         initShaders()
-		rootObject = initWorldObjects();
+		Sun = initWorldObjects();
 		initTexture();
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -443,12 +471,10 @@
 
 
 <body onload="webGLStart();">
-    <a href="http://learningwebgl.com/">&lt;&lt; Tutorial</a><br>
-
 	<table border="0" width="100%">
 
 		<tr><td style="width:500px">
-			<canvas id="lesson03-canvas" style="border: none;" width="500" height="500"></canvas>
+			<canvas id="lesson03-canvas" style="border: none;" width="1100" height="600"></canvas>
 			</td>
 			<td>
 			<input type="range" min="0" max="100" value="100" step="1" oninput="handleSlider1(this.value)"/>
@@ -471,8 +497,6 @@
 		</tr>
 
 </table>
-    <br>
-    <a href="http://learningwebgl.com/">&lt;&lt; Tutorial</a><br>
 
 
 
