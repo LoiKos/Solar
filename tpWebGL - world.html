@@ -286,11 +286,12 @@
 
 		Stars = new sphere(null);
 		Stars.translate([0,0,0]);
-		Stars.scale([70,70,70]);
+		Stars.scale([50,50,50]);
 		objects.push(Stars);
 
 		Sun = new sphere(null);
 		Sun.translate([0,0,0]);
+		Sun.scale([3,3,3]);
 		objects.push(Sun);
 		
 		/*for (var i=0; i < obj; i++)
@@ -313,11 +314,12 @@
 		var EarthPlanet = new sphere(Sun);
 		objects.push(EarthPlanet);
 		EarthPlanet.translate([6,0,0]);
+		EarthPlanet.scale([1/6,1/6,1/6]);
 
 		var MoonPlanet = new sphere(EarthPlanet);
 		objects.push(MoonPlanet);
 		MoonPlanet.translate([3,0,0]);
-
+		MoonPlanet.scale([1/3,1/3,1/3]);
 		return Sun;
 	}
 	
@@ -463,7 +465,7 @@
 
 	function handleSlider1(sliderValue)
 	{
-		//console.log(sliderValue);
+		// à faire	
 	}
 </script>
 
@@ -474,7 +476,7 @@
 	<table border="0" width="100%">
 
 		<tr><td style="width:500px">
-			<canvas id="lesson03-canvas" style="border: none;" width="1100" height="600"></canvas>
+			<canvas id="lesson03-canvas" style="border: none;" width="500" height="500"></canvas>
 			</td>
 			<td>
 			<input type="range" min="0" max="100" value="100" step="1" oninput="handleSlider1(this.value)"/>
