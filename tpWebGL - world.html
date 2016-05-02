@@ -53,6 +53,7 @@
 	var textureEarth;
 	var textureMoon;
 	var textureStars;
+	var textureSun;
 		
 	//interaction
 	var drawStyle;
@@ -60,10 +61,9 @@
 	var userRotationMatrix = mat4.create();
   	mat4.identity(userRotationMatrix);
 	
-	var rTri = 0;
-    var rSquare = 0;
-	var rSphere = 0;
-	
+	var rSun = 0;
+	var rEarth = 0;
+
 	var lastTime = 0;
 	var mouseDown = false;
   	var lastMouseX = null;
@@ -206,6 +206,13 @@
 	//TEXTURES
 	function initTexture()
 	{
+		textureSun = gl.createTexture();
+		textureSun.image = new Image();
+		textureSun.image.onload = function()
+		{
+		  handleLoadedTexture(textureSun)
+		}
+
 		textureEarth = gl.createTexture();
 		textureEarth.image = new Image();
 		textureEarth.image.onload = function()
@@ -223,6 +230,7 @@
     //textureMoon.image.src = "./img/moon.gif"; // note : croos origin problem with chrome outside webserver
 	textureEarth.image.src = "./img/earth.jpg"; // note : croos origin problem with chrome outside webserver
 	textureStars.image.src = "./img/stars.jpg";
+	textureSun.image.src = "./img/sun.jpg";
   }
 
 	function handleLoadedTexture(texture,nom)
@@ -267,17 +275,33 @@
 		mat4.translate(mvMatrix, [camX, 0.0, camZ]);
 		mat4.translate(mvMatrix, [0, 0.0, -25.0]);
 		
+
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, textureStars);
 		gl.uniform1i(shaderProgram.samplerUniform, 0);
 
 		Stars.draw();
 
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, textureEarth);
-		gl.uniform1i(shaderProgram.samplerUniform, 0);
+		//  gl.activeTexture(gl.TEXTURE0);
+		//  gl.bindTexture(gl.TEXTURE_2D, textureEarth);
+		//  gl.uniform1i(shaderProgram.samplerUniform, 0);
+
+		// EarthPlanet.draw();
+
+		 gl.activeTexture(gl.TEXTURE0);
+		 gl.bindTexture(gl.TEXTURE_2D, textureSun);
+		 gl.uniform1i(shaderProgram.samplerUniform, 0);
 
 		Sun.draw();
+
+		// gl.activeTexture(gl.TEXTURE0);
+		//  gl.bindTexture(gl.TEXTURE_2D, textureEarth);
+		//  gl.uniform1i(shaderProgram.samplerUniform, 0);
+		 
+
+		//  Sun.children.draw();
+
+
     }
 
 	function initWorldObjects()
@@ -293,6 +317,7 @@
 		Sun.translate([0,0,0]);
 		Sun.scale([3,3,3]);
 		objects.push(Sun);
+		Sun.texture = textureSun;
 		
 		/*for (var i=0; i < obj; i++)
 		{ 
@@ -331,10 +356,12 @@
 		{
             elapsed = timeNow - lastTime;
 
-            rTri += (90 * elapsed) / 1000.0;
-            rSquare += (75 * elapsed) / 1000.0;
-			rSphere += (50 * elapsed) / 1000.0;
+            //rTri += (90 * elapsed) / 1000.0;
+            //rSquare += (75 * elapsed) / 1000.0;
+			rSun += (50 * elapsed) / 1000.0;
+			rEarth += (50 * elapsed) / 400.0;
         }
+		
 		Sun.animate(elapsed);
 		lastTime = timeNow;
     }

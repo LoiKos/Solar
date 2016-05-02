@@ -44,7 +44,7 @@ worldObject.prototype.draw = function()
 			gl.bindTexture(gl.TEXTURE_2D, this.texture);
 			gl.uniform1i(shaderProgram.samplerUniform, this.texture.bindNumber);
 		}
-
+		
 		mvPushMatrix();
 		mat4.multiply(mvMatrix, this.localTransformation);
 
@@ -83,5 +83,5 @@ worldObject.prototype.animate = function(elapsedTime)
 	{
 		this.children[i].animate(elapsedTime);
 	}
-	this.rotate(0.001*elapsedTime,[0,1,0]); // cette ligne est surement discutable comme animation par défaut!
+	this.rotate(0.001*elapsedTime,[0,Math.PI,0]); // cette ligne est surement discutable comme animation par défaut!
 }
