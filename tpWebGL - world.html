@@ -50,10 +50,17 @@
     var pMatrix = mat4.create();
 	
 	//textures
-	var textureEarth;
-	var textureMoon;
 	var textureStars;
 	var textureSun;
+	var textureMercure;
+	var textureVenus;
+	var textureEarth;
+	var textureMoon;
+	var textureMars;
+	var textureJupiter;
+	var textureSaturne;
+	var textureUranus;
+	var textureNeptune;
 		
 	//interaction
 	var drawStyle;
@@ -81,6 +88,7 @@
 	//world
 	var objects = [];
 	var Sun;
+	var Stars;
 	
 	//geometry
 	var pasLat = 3;
@@ -206,11 +214,32 @@
 	//TEXTURES
 	function initTexture()
 	{
+		textureStars = gl.createTexture();
+		textureStars.image = new Image();
+		textureStars.image.onload = function()
+		{
+		  handleLoadedTexture(textureStars)
+		}
+
 		textureSun = gl.createTexture();
 		textureSun.image = new Image();
 		textureSun.image.onload = function()
 		{
 		  handleLoadedTexture(textureSun)
+		}
+
+		textureMercure = gl.createTexture();
+		textureMercure.image = new Image();
+		textureMercure.image.onload = function()
+		{
+		  handleLoadedTexture(textureMercure)
+		}
+
+		textureVenus = gl.createTexture();
+		textureVenus.image = new Image();
+		textureVenus.image.onload = function()
+		{
+		  handleLoadedTexture(textureVenus)
 		}
 
 		textureEarth = gl.createTexture();
@@ -220,20 +249,69 @@
 		  handleLoadedTexture(textureEarth)
 		}
 
-		textureStars = gl.createTexture();
-		textureStars.image = new Image();
-		textureStars.image.onload = function()
+		textureMoon = gl.createTexture();
+		textureMoon.image = new Image();
+		textureMoon.image.onload = function()
 		{
-		  handleLoadedTexture(textureStars)
+		  handleLoadedTexture(textureMoon)
 		}
 
-    //textureMoon.image.src = "./img/moon.gif"; // note : croos origin problem with chrome outside webserver
-	textureEarth.image.src = "./img/earth.jpg"; // note : croos origin problem with chrome outside webserver
-	textureStars.image.src = "./img/stars.jpg";
-	textureSun.image.src = "./img/sun.jpg";
+		textureMars = gl.createTexture();
+		textureMars.image = new Image();
+		textureMars.image.onload = function()
+		{
+		  handleLoadedTexture(textureMars)
+		}
+
+		textureJupiter = gl.createTexture();
+		textureJupiter.image = new Image();
+		textureJupiter.image.onload = function()
+		{
+		  handleLoadedTexture(textureJupiter)
+		}
+
+		textureSaturne = gl.createTexture();
+		textureSaturne.image = new Image();
+		textureSaturne.image.onload = function()
+		{
+		  handleLoadedTexture(textureSaturne)
+		}
+		
+		textureSaturne = gl.createTexture();
+		textureSaturne.image = new Image();
+		textureSaturne.image.onload = function()
+		{
+		  handleLoadedTexture(textureSaturne)
+		}
+		
+		textureUranus = gl.createTexture();
+		textureUranus.image = new Image();
+		textureUranus.image.onload = function()
+		{
+		  handleLoadedTexture(textureUranus)
+		}
+		
+		textureNeptune = gl.createTexture();
+		textureNeptune.image = new Image();
+		textureNeptune.image.onload = function()
+		{
+		  handleLoadedTexture(textureNeptune)
+		}
+ 
+		textureStars.image.src = "./img/stars.jpg";
+		textureSun.image.src = "./img/sun.jpg";
+		textureMercure.image.src = "./img/mercure.jpg"; 
+	    textureVenus.image.src = "./img/venus.jpg"; 
+		textureEarth.image.src = "./img/earth.jpg";
+	    textureMoon.image.src = "./img/moon.gif"; 
+		textureMars.image.src = "./img/mars.jpg"; 
+		textureJupiter.image.src = "./img/jupiter.jpg";
+		textureSaturne.image.src = "./img/saturn.png";
+		textureUranus.image.src = "./img/uranus.jpg";
+		textureNeptune.image.src = "./img/neptune.jpg";
   }
 
-	function handleLoadedTexture(texture,nom)
+	function handleLoadedTexture(texture)
 	{
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -275,23 +353,7 @@
 		mat4.translate(mvMatrix, [camX, 0.0, camZ]);
 		mat4.translate(mvMatrix, [0, 0.0, -25.0]);
 		
-
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, textureStars);
-		gl.uniform1i(shaderProgram.samplerUniform, 0);
-
 		Stars.draw();
-
-		//  gl.activeTexture(gl.TEXTURE0);
-		//  gl.bindTexture(gl.TEXTURE_2D, textureEarth);
-		//  gl.uniform1i(shaderProgram.samplerUniform, 0);
-
-		// EarthPlanet.draw();
-
-		 gl.activeTexture(gl.TEXTURE0);
-		 gl.bindTexture(gl.TEXTURE_2D, textureSun);
-		 gl.uniform1i(shaderProgram.samplerUniform, 0);
-
 		Sun.draw();
 
 		// gl.activeTexture(gl.TEXTURE0);
@@ -306,19 +368,95 @@
 
 	function initWorldObjects()
 	{ 
-		var obj = 12; 
+		var obj = 12;
+		var distSum=1;
+		var distScale=1;
+		var diamScale=5;
 
-		Stars = new sphere(null);
+	    Stars = new sphere(null);
 		Stars.translate([0,0,0]);
 		Stars.scale([50,50,50]);
+		Stars.texture = textureStars;
 		objects.push(Stars);
-
+		
 		Sun = new sphere(null);
 		Sun.translate([0,0,0]);
-		Sun.scale([3,3,3]);
-		objects.push(Sun);
+		Sun.scale([1,1,1]);
 		Sun.texture = textureSun;
-		
+		objects.push(Sun);
+
+		var MercurePlanet = new sphere(Sun);
+		var MercureDist = 0.357;
+		var MercureDiam = 0.00350431;
+		MercurePlanet.translate([(MercureDist*distScale)+distSum,0,0]);
+		MercurePlanet.scale([MercureDiam*diamScale,MercureDiam*diamScale,MercureDiam*diamScale]);
+		MercurePlanet.texture = textureMercure;
+		objects.push(MercurePlanet);
+
+		var VenusPlanet = new sphere(Sun);
+		var VenusDist = 0.723;
+		var VenusDiam = 0.008695402;
+		VenusPlanet.translate([(VenusDist*distScale)+distSum,0,0]);
+		VenusPlanet.scale([VenusDiam*diamScale,VenusDiam*diamScale,VenusDiam*diamScale]);
+		VenusPlanet.texture = textureVenus;
+		objects.push(VenusPlanet);
+
+		var EarthPlanet = new sphere(Sun);
+		var EarthDist = 1;
+		var EarthDiam = 0.009163793;
+		EarthPlanet.translate([(EarthDist*distScale)+distSum,0,0]);
+		EarthPlanet.scale([EarthDiam*diamScale,EarthDiam*diamScale,EarthDiam*diamScale]);
+		EarthPlanet.texture = textureEarth;
+		objects.push(EarthPlanet);
+
+		var MoonPlanet = new sphere(EarthPlanet);
+		var MoonDist = 0.8;
+		var MoonDiam = 0.02723;
+		MoonPlanet.translate([(MoonDist*distScale)+distSum,0,0]);
+		MoonPlanet.scale([MoonDiam*diamScale,MoonDiam*diamScale,MoonDiam*diamScale]);
+		MoonPlanet.texture = textureMoon;
+		objects.push(MoonPlanet);
+
+		var MarsPlanet = new sphere(Sun);
+		var MarsDist = 1.524;
+		var MarsDiam = 0.004880747;
+		MarsPlanet.translate([(MarsDist*distScale)+distSum,0,0]);
+		MarsPlanet.scale([MarsDiam*diamScale,MarsDiam*diamScale,MarsDiam*diamScale]);
+		MarsPlanet.texture = textureMars;
+		objects.push(MarsPlanet);
+
+		var JupiterPlanet = new sphere(Sun);
+		var JupiterDist = 5.203;
+		var JupiterDiam = 0.102586207;
+		JupiterPlanet.translate([(JupiterDist*distScale)+distSum,0,0]);
+		JupiterPlanet.scale([JupiterDiam*diamScale,JupiterDiam*diamScale,JupiterDiam*diamScale]);
+		JupiterPlanet.texture = textureJupiter;
+		objects.push(JupiterPlanet);
+
+		var SaturnePlanet = new sphere(Sun);
+		var SaturneDist = 9.05;
+		var SaturneDiam = 0.086206897;
+		SaturnePlanet.translate([(SaturneDist*distScale)+distSum,0,0]);
+		SaturnePlanet.scale([SaturneDiam*diamScale,SaturneDiam*diamScale,SaturneDiam*diamScale]);
+		SaturnePlanet.texture = textureSaturne;
+		objects.push(SaturnePlanet);
+
+		var UranusPlanet = new sphere(Sun);
+		var UranusDist = 19.218;
+		var UranusDiam = 0.036724138;
+		UranusPlanet.translate([(UranusDist*distScale)+distSum,0,0]);
+		UranusPlanet.scale([UranusDiam*diamScale,UranusDiam*diamScale,UranusDiam*diamScale]);
+		UranusPlanet.texture = textureUranus;
+		objects.push(UranusPlanet);
+
+		var NeptunePlanet = new sphere(Sun);
+		var NeptuneDist = 30.11;
+		var NeptuneDiam = 0.03558046;
+		NeptunePlanet.translate([(NeptuneDist*distScale)+distSum,0,0]);
+		NeptunePlanet.scale([NeptuneDiam*diamScale,NeptuneDiam*diamScale,NeptuneDiam*diamScale]);
+		NeptunePlanet.texture = textureNeptune;
+		objects.push(NeptunePlanet);
+
 		/*for (var i=0; i < obj; i++)
 		{ 
 			var newObject = new triangle(rootObject);
@@ -336,15 +474,6 @@
 		objects.push(newObject);
 		newObject.translate([2,2,0]);*/
 
-		var EarthPlanet = new sphere(Sun);
-		objects.push(EarthPlanet);
-		EarthPlanet.translate([6,0,0]);
-		EarthPlanet.scale([1/6,1/6,1/6]);
-
-		var MoonPlanet = new sphere(EarthPlanet);
-		objects.push(MoonPlanet);
-		MoonPlanet.translate([3,0,0]);
-		MoonPlanet.scale([1/3,1/3,1/3]);
 		return Sun;
 	}
 	
@@ -378,9 +507,10 @@
 
 		//webGL
         initGL(canvas);
-        initShaders()
+        initShaders();
+        initTexture();
 		Sun = initWorldObjects();
-		initTexture();
+		
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.enable(gl.DEPTH_TEST);
