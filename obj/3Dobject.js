@@ -2,16 +2,22 @@
 //INITWORLD
 function worldObject(parent)
 {
-	this.localTransformation = mat4.create();
+	this.localTransformation = mat4.create();	//Matrice de translation
+	this.orbitMat = mat4.create();				//Matrice d'orbite
+	this.rotatMat = mat4.create();				//Matrice de rotation
 	this.children = [];
 	this.vertexPositionBuffer = null;
 	this.vertexTextureCoordBuffer = null;
 	this.vertexIndexBuffer = null;
 	this.toggled = true;
-	// il faudra sans doute ajouter des choses ici pour gérer les nomales
+	// il faudra sans doute ajouter des choses ici pour gérer les normales
 	this.texture = null;
 	mat4.identity(this.localTransformation);
+	mat4.identity(this.orbitMat);				//Matrice d'orbite
+	mat4.identity(this.rotatMat);				//Matrice de rotation
 	if(parent != null) parent.addChild(this);
+	this.orbitParam=0;							//Vitesse de l'orbite
+	this.rotatParam=0;							//Vitesse de rotation
 }
 
 worldObject.prototype.addChild = function(child)
@@ -26,7 +32,12 @@ worldObject.prototype.translate = function(translation)
 
 worldObject.prototype.rotate = function(rotation, axis)
 {
-	mat4.rotate(this.localTransformation, rotation, axis);
+	mat4.rotate(this.rotatMat, rotation, axis);
+}
+
+worldObject.prototype.orbit = function(rotation, axis)
+{
+	mat4.rotate(this.orbitMat, rotation, axis);
 }
 
 worldObject.prototype.scale = function(scale)
@@ -47,7 +58,11 @@ worldObject.prototype.draw = function()
 		}
 		
 		mvPushMatrix();
+		mat4.multiply(mvMatrix,this.orbitMat);					//Matrice d'orbite
 		mat4.multiply(mvMatrix, this.localTransformation);
+		mvPushMatrix();
+		mat4.multiply(mvMatrix,this.rotatMat);					//Matrice de rotation
+
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexPositionBuffer);
 		gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -68,6 +83,8 @@ worldObject.prototype.draw = function()
 			gl.drawElements(drawStyle, this.vertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 		}
 
+		mvPopMatrix();
+
 		//draws children
 		for(var i =0; i< this.children.length; i++)
 		{
@@ -84,5 +101,6 @@ worldObject.prototype.animate = function(elapsedTime)
 	{
 		this.children[i].animate(elapsedTime);
 	}
-	this.rotate(0.001*elapsedTime,[0,Math.PI,0]); // cette ligne est surement discutable comme animation par défaut!
+	this.orbit(this.orbitParam*0.00005*elapsedTime,[0,Math.PI,0]); // cette ligne est surement discutable comme animation par défaut!
+	this.rotate(this.rotatParam*0.0005*elapsedTime,[0,Math.PI,0]);
 }
