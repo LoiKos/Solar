@@ -353,8 +353,11 @@
 		mat4.translate(mvMatrix, [camX, 0, camZ]);
 		//mat4.translate(mvMatrix, [0, -15, 0]);
 		mat4.translate(mvMatrix, [0, 0.0, -25.0]);
-		
+
+		gl.disable(gl.DEPTH_TEST);
 		Stars.draw();
+		gl.enable(gl.DEPTH_TEST);
+
 		Sun.draw();
 
 		// gl.activeTexture(gl.TEXTURE0);
@@ -674,7 +677,6 @@
 			</select>
 			</td>
 		</tr>
-
 </table>
 
 
