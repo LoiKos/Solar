@@ -37,10 +37,10 @@
 
     uniform vec3 uAmbientColor;
 
-    uniform bool uUseLighting;
-
     uniform vec3 uPointLightingLocation; 
-  	uniform vec3 uPointLightingColor;    
+  	uniform vec3 uPointLightingColor;   
+
+  	uniform bool uUseLighting; 
 
 	varying vec2 vTextureCoord;
 	varying vec3 vLightWeighting;
@@ -50,7 +50,9 @@
 	{
         vec4 mvPosition = uMVMatrix * vec4(aVertexPosition, 1.0);
         gl_Position = uPMatrix * mvPosition;
+		
 		vTextureCoord = aTextureCoord;
+		
 		if (!uUseLighting) {
             vLightWeighting = vec3(1.0, 1.0, 1.0);
         } else {
@@ -108,6 +110,7 @@
 	var camX = 0;
 	var camZ = 0;
 	var camHeight = 0;
+	var camWidth = 0;
 
 	//world
 	var objects = [];
@@ -383,33 +386,23 @@
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
-        mat4.identity(mvMatrix);
-		
-		mat4.rotate(mvMatrix, -camHeight, [1, 0, 0]);
-		
-		mat4.translate(mvMatrix, [camX, 0, camZ]);
-		//mat4.translate(mvMatrix, [0, -15, 0]);
-		mat4.translate(mvMatrix, [0, 0.0, -25.0]);
 
-		gl.disable(gl.DEPTH_TEST); // on enlève le z-buffer
-		Stars.draw(); // On dessine 
-		gl.enable(gl.DEPTH_TEST); // On remet le z-buffer
-
-   		 var lighting = document.getElementById("lighting").checked;
+        var lighting = document.getElementById("lighting").checked;
         gl.uniform1i(shaderProgram.useLightingUniform, lighting);
+        
         if (lighting) {
             gl.uniform3f(
                 shaderProgram.ambientColorUniform,
-                0.2,
-                0.2,
-                0.2
+                0.5,
+                0.5,
+                0.5
             );
 
             gl.uniform3f(
                 shaderProgram.pointLightingLocationUniform,
                	0,
                 0,
-                -20
+                0
             );
 
             gl.uniform3f(
@@ -421,9 +414,27 @@
         }
 
 
-      	// fin Lumière
+        mat4.identity(mvMatrix);
+		
+		mat4.rotate(mvMatrix, -camHeight, [1, 0, 0]);
+		mat4.rotate(mvMatrix, -camWidth, [0, 1, 0]);
+		
+		mat4.translate(mvMatrix, [camX, 0, camZ]);
+		//mat4.translate(mvMatrix, [0, -15, 0]);
+		mat4.translate(mvMatrix, [0, 0.0, -25.0]);
 
+		gl.disable(gl.DEPTH_TEST); // on enlève le z-buffer
+		// mvPushMatrix();
+		Stars.draw(); // On dessine 
+		// mvPopMatrix(); 
+		gl.enable(gl.DEPTH_TEST); // On remet le z-buffer
+
+   		 
+
+      	// fin Lumière
+      	mvPushMatrix();
 		Sun.draw();
+		mvPopMatrix();
     }
 
 	function initWorldObjects()
@@ -622,9 +633,30 @@
 		}
 		var newX = event.clientX;
 		var newY = event.clientY;
+		var sensi = 0.0006;
+
+		if(newX < lastMouseX)
+		{
+			camWidth+=degToRad(newX*sensi);
+		}
+
+		if(newX > lastMouseX)
+		{
+			camWidth-=degToRad(newX*sensi);
+		}
+
+		if(newY < lastMouseY)
+		{
+			camHeight+=degToRad(newY*sensi);
+		}
+
+		if(newY > lastMouseY)
+		{
+			camHeight-=degToRad(newY*sensi);
+		}
 
 
-		var newRotationMatrix = mat4.create();
+		/*var newRotationMatrix = mat4.create();
 		mat4.identity(newRotationMatrix);
 
 		var deltaX = newX - lastMouseX;
@@ -633,7 +665,7 @@
 		var deltaY = newY - lastMouseY;
 		mat4.rotate(newRotationMatrix, degToRad(deltaY / 7), [1, 0, 0]);
 
-		mat4.multiply(newRotationMatrix, userRotationMatrix, userRotationMatrix);
+		mat4.multiply(newRotationMatrix, userRotationMatrix, userRotationMatrix);*/
 
 		lastMouseX = newX;
 		lastMouseY = newY;
