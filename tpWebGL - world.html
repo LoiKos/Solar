@@ -14,28 +14,52 @@
     precision mediump float;
 
 	varying vec2 vTextureCoord;
+	varying vec3 vLightWeighting;
 
 	uniform sampler2D uSampler;
 
     void main(void)
 	{
-		gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+		//gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+		vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+        gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
     }
 </script>
 
 <script id="shader-vs" type="x-shader/x-vertex">
     attribute vec3 aVertexPosition;
+    attribute vec3 aVertexNormal; 
 	attribute vec2 aTextureCoord;
 
     uniform mat4 uMVMatrix;
     uniform mat4 uPMatrix;
+    uniform mat3 uNMatrix;
+
+    uniform vec3 uAmbientColor;
+
+    uniform bool uUseLighting;
+
+    uniform vec3 uPointLightingLocation; 
+  	uniform vec3 uPointLightingColor;    
 
 	varying vec2 vTextureCoord;
+	varying vec3 vLightWeighting;
+   
 
     void main(void)
 	{
-        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vec4 mvPosition = uMVMatrix * vec4(aVertexPosition, 1.0);
+        gl_Position = uPMatrix * mvPosition;
 		vTextureCoord = aTextureCoord;
+		if (!uUseLighting) {
+            vLightWeighting = vec3(1.0, 1.0, 1.0);
+        } else {
+            vec3 lightDirection = normalize(uPointLightingLocation - mvPosition.xyz);
+
+            vec3 transformedNormal = uNMatrix * aVertexNormal;
+            float directionalLightWeighting = max(dot(transformedNormal, lightDirection), 0.0);
+            vLightWeighting = uAmbientColor + uPointLightingColor * directionalLightWeighting;
+        }
     }
 </script>
 
@@ -183,9 +207,17 @@
 		shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
         gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
 
+        shaderProgram.vertexNormalBuffer = gl.getAttribLocation(shaderProgram, "aVertexNormal");
+        gl.enableVertexAttribArray(shaderProgram.vertexNormalBuffer);
+
         shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
         shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+        shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
         shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
+        shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, "uUseLighting");
+        shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, "uAmbientColor");
+        shaderProgram.pointLightingLocationUniform = gl.getUniformLocation(shaderProgram, "uPointLightingLocation");
+        shaderProgram.pointLightingColorUniform = gl.getUniformLocation(shaderProgram, "uPointLightingColor");
     }
 	
 	function mvPushMatrix()
@@ -208,6 +240,11 @@
 	{
         gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
         gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+
+        var normalMatrix = mat3.create();
+        mat4.toInverseMat3(mvMatrix, normalMatrix);
+        mat3.transpose(normalMatrix);
+        gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
     }
 	
 	
@@ -354,20 +391,39 @@
 		//mat4.translate(mvMatrix, [0, -15, 0]);
 		mat4.translate(mvMatrix, [0, 0.0, -25.0]);
 
-		gl.disable(gl.DEPTH_TEST);
-		Stars.draw();
-		gl.enable(gl.DEPTH_TEST);
+		gl.disable(gl.DEPTH_TEST); // on enlève le z-buffer
+		Stars.draw(); // On dessine 
+		gl.enable(gl.DEPTH_TEST); // On remet le z-buffer
+
+   		 var lighting = document.getElementById("lighting").checked;
+        gl.uniform1i(shaderProgram.useLightingUniform, lighting);
+        if (lighting) {
+            gl.uniform3f(
+                shaderProgram.ambientColorUniform,
+                0.2,
+                0.2,
+                0.2
+            );
+
+            gl.uniform3f(
+                shaderProgram.pointLightingLocationUniform,
+               	0,
+                0,
+                -20
+            );
+
+            gl.uniform3f(
+                shaderProgram.pointLightingColorUniform,
+                0.8,
+                0.8,
+                0.8
+            );
+        }
+
+
+      	// fin Lumière
 
 		Sun.draw();
-
-		// gl.activeTexture(gl.TEXTURE0);
-		//  gl.bindTexture(gl.TEXTURE_2D, textureEarth);
-		//  gl.uniform1i(shaderProgram.samplerUniform, 0);
-		 
-
-		//  Sun.children.draw();
-
-
     }
 
 	function initWorldObjects()
@@ -614,9 +670,7 @@
 			case 34: //pageDown
 					camHeight-=degToRad(1);
 					break;
-
-				default:
-
+			default:
 		}
     }
 	
@@ -664,6 +718,9 @@
 			<input type="checkbox" name="mesh" value="triangle" onclick='handleClick(this)' checked=true/>Triangle<br />
 			<input type="checkbox" name="mesh" value="sphere" onclick='handleClick(this)' checked="true">Sphere<br />
 			<input type="checkbox" name="mesh" value="square" onclick='handleClick(this)' checked=1/>Square<br />
+			<input id="lighting" checked="checked" type="checkbox"> Utiliser l'éclairage<br>
+
+			
 
 			<br />
 			Draw mode <select id="drawCombo" onChange="drawCombo(this)">

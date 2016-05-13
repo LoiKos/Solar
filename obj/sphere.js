@@ -7,12 +7,12 @@ sphere.prototype = new worldObject;
 		this.vertexPositionBuffer = buffers[0];
 		this.vertexTextureCoordBuffer = buffers[1];
 		this.vertexIndexBuffer = buffers[2];
-		//il manque surement quelque chose pour les normales ici
+		this.vertexNormalBuffer = buffers[3];
 	}
 
 	sphere.prototype.initBuffers = function()
 	{
-		//il manque le code des normales à ajouter!
+		normales = [];
 		vertices = [];
         textureCoords = [];
 		var nbVertice = 0;
@@ -20,12 +20,31 @@ sphere.prototype = new worldObject;
 		var nbTriangles = 0;
 		var resLat = 0;
 		var resLongi = tetaMax/pasLong+1;
+		
 		for (var lat=-90; lat <= phiMax; lat+=pasLat)
-		{
+		{	
+			// Theta => angle latitude
+			var theta = lat * Math.PI / phiMax;
+      		var sinTheta = Math.sin(theta);
+      		var cosTheta = Math.cos(theta);
+
 			for (var longi=0; longi <= tetaMax; longi+=pasLong)
             {
-				vertices = vertices.concat(pol2Cart(longi, lat)); //A
-				//il manque le code des normales à ajouter!
+				vertices = vertices.concat(pol2Cart(longi, lat)); 
+				
+				// Phi => angle longitude
+				var phi = longi * 2 * Math.PI / tetaMax;
+        		var sinPhi = Math.sin(phi);
+        		var cosPhi = Math.cos(phi);
+
+
+				var x = cosPhi * sinTheta;
+        		var y = cosTheta;
+        		var z = sinPhi * sinTheta;
+
+        		// Coordonnées des normales
+        		normales = normales.concat([x,y,z]);
+
 				textureCoords = textureCoords.concat([longi/tetaMax, (90+lat)/(90+phiMax)]);
 				if(longi != tetaMax)
 				{
@@ -67,7 +86,12 @@ sphere.prototype = new worldObject;
 		vertexTextureCoordBuffer.itemSize = 2;
 		vertexTextureCoordBuffer.numItems = nbVertice;
 		
-		//il manque le code des normales à ajouter!
+		// Buffer Normal
+		vertexNormalBuffer = gl.createBuffer(); 
+    	gl.bindBuffer(gl.ARRAY_BUFFER, vertexNormalBuffer);
+    	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normales), gl.STATIC_DRAW); 
+    	vertexNormalBuffer.itemSize = 3; 
+    	vertexNormalBuffer.numItems = normales.length / 3;
 		
-		return [vertexPositionBuffer, vertexTextureCoordBuffer, vertexIndexBuffer];
+		return [vertexPositionBuffer, vertexTextureCoordBuffer, vertexIndexBuffer, vertexNormalBuffer];
 	}
