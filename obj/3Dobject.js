@@ -49,6 +49,7 @@ worldObject.prototype.draw = function()
 {
 	if(this.toggled)
 	{
+
 		if(this.texture != null)
 		{
 			//gl.activeTexture(this.texture.getbind());

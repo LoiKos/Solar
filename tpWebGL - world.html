@@ -244,7 +244,7 @@
         gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
         gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 
-        var normalMatrix = mat3.create();
+       	 var normalMatrix = mat3.create();
         mat4.toInverseMat3(mvMatrix, normalMatrix);
         mat3.transpose(normalMatrix);
         gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
@@ -402,7 +402,7 @@
                 shaderProgram.pointLightingLocationUniform,
                	0,
                 0,
-                0
+				0.0
             );
 
             gl.uniform3f(
@@ -421,7 +421,7 @@
 		
 		mat4.translate(mvMatrix, [camX, 0, camZ]);
 		//mat4.translate(mvMatrix, [0, -15, 0]);
-		mat4.translate(mvMatrix, [0, 0.0, -25.0]);
+		mat4.translate(mvMatrix, [0, 0.0, -20.0]);
 
 		gl.disable(gl.DEPTH_TEST); // on enlève le z-buffer
 		// mvPushMatrix();
