@@ -32,17 +32,8 @@ sphere.prototype = new worldObject;
             {
 				vertices = vertices.concat(pol2Cart(longi, lat)); 
 				
-				var phi = longi * 2 * Math.PI / tetaMax;
-        		var sinPhi = Math.sin(phi);
-        		var cosPhi = Math.cos(phi);
-
-
-				var x = cosPhi * sinTheta;
-        		var y = cosTheta;
-        		var z = sinPhi * sinTheta;
-
         		// Coordonnées des normales
-        		normales = normales.concat(pol2Cart(x,y,z));
+        		normales = normales.concat(pol2Cart(longi,lat));
         	
 				textureCoords = textureCoords.concat([longi/tetaMax, (90+lat)/(90+phiMax)]);
 				if(longi != tetaMax)
@@ -90,7 +81,7 @@ sphere.prototype = new worldObject;
     	gl.bindBuffer(gl.ARRAY_BUFFER, vertexNormalBuffer);
     	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normales), gl.STATIC_DRAW); 
     	vertexNormalBuffer.itemSize = 3; 
-    	vertexNormalBuffer.numItems = normales.length/3;
+    	vertexNormalBuffer.numItems = normales.length/2;
 		
 		return [vertexPositionBuffer, vertexTextureCoordBuffer, vertexIndexBuffer, vertexNormalBuffer];
 	}
