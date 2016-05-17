@@ -8,7 +8,7 @@
 <script type="text/javascript" src="obj/sphere.js"></script>
 <script type="text/javascript" src="obj/triangle.js"></script>
 <script type="text/javascript" src="obj/square.js"></script>
-
+<script type="text/javascript" src="obj/anneau.js"></script>
 
 <script id="shader-fs" type="x-shader/x-fragment">
     precision mediump float;
@@ -456,6 +456,9 @@
 		Sun.texture = textureSun;
 		Sun.rotatParam = 1/0.5;
 		objects.push(Sun);
+
+		var anneau = new Anneau(Sun);
+		objects.push(anneau);
 
 		var MercurePlanet = new sphere(Sun);
 		var MercureDist = 0.357;
