@@ -33,7 +33,7 @@ sphere.prototype = new worldObject;
 				vertices = vertices.concat(pol2Cart(longi, lat)); 
 				
         		// Coordonnées des normales
-        		normales = normales.concat(pol2Cart(longi,lat));
+        		normales = normales.concat(pol2Cart(longi,lat));	
         	
 				textureCoords = textureCoords.concat([longi/tetaMax, (90+lat)/(90+phiMax)]);
 				if(longi != tetaMax)
