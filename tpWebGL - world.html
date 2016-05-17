@@ -686,15 +686,19 @@
     	{
 			case 37: //left
 					camX++;
+					Stars.translate([-0.02,0,0]);
 					break;
 			case 39: //right
 					camX--;
+					Stars.translate([0.02,0,0]);
 					break;
 			case 38: //down
 					camZ++;
+					Stars.translate([0,0,-0.02]);
 					break;
 			case 40: //forward
 					camZ--;
+					Stars.translate([0,0,0.02]);
 					break;
 			case 33: //pageUp
 					camHeight+=degToRad(1);
