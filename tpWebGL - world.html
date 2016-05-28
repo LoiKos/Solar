@@ -393,16 +393,16 @@
         if (lighting) {
             gl.uniform3f(
                 shaderProgram.ambientColorUniform,
-                0.2,
-                0.2,
-                0.2
+                0.4,
+                0.4,
+                0.4
             );
 
             gl.uniform3f(
                 shaderProgram.pointLightingLocationUniform,
-               	0,
-                0,
-				-10.0
+               	0.0,
+               	0.0,
+				-5.0
             );
 
             gl.uniform3f(
@@ -457,8 +457,7 @@
 		Sun.rotatParam = 1/0.5;
 		objects.push(Sun);
 
-		var anneau = new Anneau(Sun);
-		objects.push(anneau);
+		
 
 		var MercurePlanet = new sphere(Sun);
 		var MercureDist = 0.357;
@@ -529,6 +528,10 @@
 		SaturnePlanet.orbitParam = 10;
 		SaturnePlanet.rotatParam = 1/0.5;
 		objects.push(SaturnePlanet);
+
+		//var anneau = new Anneau(Sun);
+		//objects.push(anneau);
+
 
 		var UranusPlanet = new sphere(Sun);
 		var UranusDist = 19.218;
