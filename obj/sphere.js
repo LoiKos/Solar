@@ -1,16 +1,23 @@
 sphere.prototype = new worldObject;
-	function sphere(parent)
-	{
+	function sphere(parent,normalelight)
+	{	
+		if(typeof normalelight == "undefined")
+		{
+			normalelight = 1
+		}
+		console.log(normalelight)
+		
+
 		this.base = worldObject;
 		this.base(parent);
-		var buffers = this.initBuffers();
+		var buffers = this.initBuffers(normalelight);
 		this.vertexPositionBuffer = buffers[0];
 		this.vertexTextureCoordBuffer = buffers[1];
 		this.vertexIndexBuffer = buffers[2];
 		this.vertexNormalBuffer = buffers[3];
 	}
 
-	sphere.prototype.initBuffers = function()
+	sphere.prototype.initBuffers = function(normalelight)
 	{
 		normales = [];
 		vertices = [];
@@ -29,12 +36,11 @@ sphere.prototype = new worldObject;
       		var cosTheta = (Math.cos(theta));
 
 			for (var longi=0; longi <= tetaMax; longi+=pasLong)
-            {
-				vertices = vertices.concat(pol2Cart(longi, lat)); 
-				
+            {	
+				vertices = vertices.concat(pol2CartSphere(longi, lat, normalelight)); 
+
         		// Coordonnées des normales
-        		console.log(this.objectType)
-        		normales = normales.concat(pol2Cart(longi, lat));
+        		normales = normales.concat(pol2CartSphere(longi, lat, normalelight));
 
         
         	
@@ -87,4 +93,12 @@ sphere.prototype = new worldObject;
     	vertexNormalBuffer.numItems = normales.length/3;
 		
 		return [vertexPositionBuffer, vertexTextureCoordBuffer, vertexIndexBuffer, vertexNormalBuffer];
+	}
+
+	function pol2CartSphere(longi, lat, normalDirection) {
+	    return [
+	        normalDirection * Math.cos(degToRad(lat)) * Math.sin(degToRad(longi)),
+	        normalDirection * Math.sin(degToRad(lat)),
+	        normalDirection * Math.cos(degToRad(lat)) * Math.cos(degToRad(longi))
+	    ];
 	}

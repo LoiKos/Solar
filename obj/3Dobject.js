@@ -12,6 +12,7 @@ function worldObject(parent)
 	this.toggled = true;
 	this.vertexNormalBuffer = null;
 	this.texture = null;
+	this.normalDirection = null;
 	mat4.identity(this.localTransformation);
 	mat4.identity(this.orbitMat);				//Matrice d'orbite
 	mat4.identity(this.rotatMat);				//Matrice de rotation
@@ -75,6 +76,7 @@ worldObject.prototype.draw = function()
 		gl.vertexAttribPointer(shaderProgram.vertexNormalBuffer, this.vertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
 		
 		setMatrixUniforms();
+		
 		if(this.vertexIndexBuffer == null)
 		{
 			gl.drawArrays(drawStyle, 0, this.vertexPositionBuffer.numItems);

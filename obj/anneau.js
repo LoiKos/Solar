@@ -25,9 +25,9 @@ Anneau.prototype = new worldObject;
 		
 		for( i=0 ; i < 360 ; i += 10){
 			
-			x = Math.cos(i) ;
+			x = Math.cos(i);
 			y = 0 ;
-			z = Math.sin(i) ;
+			z = Math.sin(i);
 
 			normalData.push(x);
 			normalData.push(y);
@@ -59,9 +59,7 @@ Anneau.prototype = new worldObject;
 			nbIndex += 2;
 		}
 
-		console.log(index.length);
-		console.log(index[323]);
-		console.log(vertices.length);
+		
 
 		vertexPositionBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer);
@@ -73,7 +71,7 @@ Anneau.prototype = new worldObject;
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(index), gl.STATIC_DRAW);
 		vertexIndexBuffer.itemSize = 1;
-		vertexIndexBuffer.numItems = index.length;
+		vertexIndexBuffer.numItems = index.length*3;
 
 		vertexTextureCoordBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, vertexTextureCoordBuffer);
