@@ -1,23 +1,26 @@
 sphere.prototype = new worldObject;
-	function sphere(parent,normalelight)
+	function sphere(parent,planet)
 	{	
-		if(typeof normalelight == "undefined")
-		{
-			normalelight = 1
+		var coeflight = null;
+		switch(planet) {
+		    case "sun":
+		        coeflight = -1;
+		        break;
+		    default:
+		        coeflight = 1;
 		}
-		console.log(normalelight)
-		
+		console.log(coeflight)
 
 		this.base = worldObject;
 		this.base(parent);
-		var buffers = this.initBuffers(normalelight);
+		var buffers = this.initBuffers(coeflight);
 		this.vertexPositionBuffer = buffers[0];
 		this.vertexTextureCoordBuffer = buffers[1];
 		this.vertexIndexBuffer = buffers[2];
 		this.vertexNormalBuffer = buffers[3];
 	}
 
-	sphere.prototype.initBuffers = function(normalelight)
+	sphere.prototype.initBuffers = function(coeflight)
 	{
 		normales = [];
 		vertices = [];
@@ -37,10 +40,10 @@ sphere.prototype = new worldObject;
 
 			for (var longi=0; longi <= tetaMax; longi+=pasLong)
             {	
-				vertices = vertices.concat(pol2CartSphere(longi, lat, normalelight)); 
+				vertices = vertices.concat(pol2Cart(longi, lat, coeflight)); 
 
         		// Coordonnées des normales
-        		normales = normales.concat(pol2CartSphere(longi, lat, normalelight));
+        		normales = normales.concat(pol2CartSph(longi, lat, coeflight));
 
         
         	
@@ -95,7 +98,8 @@ sphere.prototype = new worldObject;
 		return [vertexPositionBuffer, vertexTextureCoordBuffer, vertexIndexBuffer, vertexNormalBuffer];
 	}
 
-	function pol2CartSphere(longi, lat, normalDirection) {
+	function pol2CartSph(longi, lat, normalDirection) {
+		console.log(normalDirection)
 	    return [
 	        normalDirection * Math.cos(degToRad(lat)) * Math.sin(degToRad(longi)),
 	        normalDirection * Math.sin(degToRad(lat)),

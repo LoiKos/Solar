@@ -9,6 +9,10 @@
 <script type="text/javascript" src="obj/triangle.js"></script>
 <script type="text/javascript" src="obj/square.js"></script>
 <script type="text/javascript" src="obj/anneau.js"></script>
+<script type="text/javascript" src="Fonctions/texture.js"></script>
+<script type="text/javascript" src="Fonctions/shader.js"></script>
+<script type="text/javascript" src="Fonctions/controls.js"></script>
+
 
 <script id="shader-fs" type="x-shader/x-fragment">
     precision mediump float;
@@ -140,88 +144,7 @@
         }
     }
 
-    function getShader(gl, id)
-	{
-        var shaderScript = document.getElementById(id);
-        if (!shaderScript)
-		{
-            return null;
-        }
 
-        var str = "";
-        var k = shaderScript.firstChild;
-        while (k)
-		{
-            if (k.nodeType == 3)
-			{
-                str += k.textContent;
-            }
-            k = k.nextSibling;
-        }
-
-        var shader;
-        if (shaderScript.type == "x-shader/x-fragment")
-		{
-            shader = gl.createShader(gl.FRAGMENT_SHADER);
-        } else if (shaderScript.type == "x-shader/x-vertex")
-		{
-            shader = gl.createShader(gl.VERTEX_SHADER);
-        } else if (shaderScript.type == "x-shader/x-vertex")
-		{
-            shader = gl.createShader(gl.VERTEX_SHADER);
-        }
-		else
-		{
-            return null;
-        }
-
-        gl.shaderSource(shader, str);
-        gl.compileShader(shader);
-
-        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
-		{
-            alert(gl.getShaderInfoLog(shader));
-            return null;
-        }
-
-        return shader;
-    }
-
-	function initShaders()
-	{
-        var fragmentShader = getShader(gl, "shader-fs");
-        var vertexShader = getShader(gl, "shader-vs");
-
-        shaderProgram = gl.createProgram();
-        gl.attachShader(shaderProgram, vertexShader);
-        gl.attachShader(shaderProgram, fragmentShader);
-        gl.linkProgram(shaderProgram);
-
-        if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS))
-		{
-            alert("Could not initialise shaders");
-        }
-
-        gl.useProgram(shaderProgram);
-
-        shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
-        gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
-
-		shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
-        gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
-
-        shaderProgram.vertexNormalBuffer = gl.getAttribLocation(shaderProgram, "aVertexNormal");
-        gl.enableVertexAttribArray(shaderProgram.vertexNormalBuffer);
-
-        shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
-        shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
-        shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
-        shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
-        shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, "uUseLighting");
-        shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, "uAmbientColor");
-        shaderProgram.pointLightingLocationUniform = gl.getUniformLocation(shaderProgram, "uPointLightingLocation");
-        shaderProgram.pointLightingColorUniform = gl.getUniformLocation(shaderProgram, "uPointLightingColor");
-    }
 	
 	function mvPushMatrix()
 	{
@@ -250,118 +173,6 @@
         gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
     }
 	
-	
-	//TEXTURES
-	function initTexture()
-	{
-		textureStars = gl.createTexture();
-		textureStars.image = new Image();
-		textureStars.image.onload = function()
-		{
-		  handleLoadedTexture(textureStars)
-		}
-
-		textureSun = gl.createTexture();
-		textureSun.image = new Image();
-		textureSun.image.onload = function()
-		{
-		  handleLoadedTexture(textureSun)
-		}
-
-		textureMercure = gl.createTexture();
-		textureMercure.image = new Image();
-		textureMercure.image.onload = function()
-		{
-		  handleLoadedTexture(textureMercure)
-		}
-
-		textureVenus = gl.createTexture();
-		textureVenus.image = new Image();
-		textureVenus.image.onload = function()
-		{
-		  handleLoadedTexture(textureVenus)
-		}
-
-		textureEarth = gl.createTexture();
-		textureEarth.image = new Image();
-		textureEarth.image.onload = function()
-		{
-		  handleLoadedTexture(textureEarth)
-		}
-
-		textureMoon = gl.createTexture();
-		textureMoon.image = new Image();
-		textureMoon.image.onload = function()
-		{
-		  handleLoadedTexture(textureMoon)
-		}
-
-		textureMars = gl.createTexture();
-		textureMars.image = new Image();
-		textureMars.image.onload = function()
-		{
-		  handleLoadedTexture(textureMars)
-		}
-
-		textureJupiter = gl.createTexture();
-		textureJupiter.image = new Image();
-		textureJupiter.image.onload = function()
-		{
-		  handleLoadedTexture(textureJupiter)
-		}
-
-		textureSaturne = gl.createTexture();
-		textureSaturne.image = new Image();
-		textureSaturne.image.onload = function()
-		{
-		  handleLoadedTexture(textureSaturne)
-		}
-		
-		textureSaturne = gl.createTexture();
-		textureSaturne.image = new Image();
-		textureSaturne.image.onload = function()
-		{
-		  handleLoadedTexture(textureSaturne)
-		}
-		
-		textureUranus = gl.createTexture();
-		textureUranus.image = new Image();
-		textureUranus.image.onload = function()
-		{
-		  handleLoadedTexture(textureUranus)
-		}
-		
-		textureNeptune = gl.createTexture();
-		textureNeptune.image = new Image();
-		textureNeptune.image.onload = function()
-		{
-		  handleLoadedTexture(textureNeptune)
-		}
- 
-		textureStars.image.src = "./img/stars.jpg";
-		textureSun.image.src = "./img/sun.jpg";
-		textureMercure.image.src = "./img/mercure.jpg"; 
-	    textureVenus.image.src = "./img/venus.jpg"; 
-		textureEarth.image.src = "./img/earth.jpg";
-	    textureMoon.image.src = "./img/moon.gif"; 
-		textureMars.image.src = "./img/mars.jpg"; 
-		textureJupiter.image.src = "./img/jupiter.jpg";
-		textureSaturne.image.src = "./img/saturn.png";
-		textureUranus.image.src = "./img/uranus.jpg";
-		textureNeptune.image.src = "./img/neptune.jpg";
-  }
-
-	function handleLoadedTexture(texture)
-	{
-		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-		gl.bindTexture(gl.TEXTURE_2D, texture);
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-		gl.generateMipmap(gl.TEXTURE_2D);
-		gl.bindTexture(gl.TEXTURE_2D, null);
-	}
-
 
 	//INITGL
 	
@@ -421,7 +232,7 @@
 		
 		mat4.translate(mvMatrix, [camX, 0, camZ]);
 		//mat4.translate(mvMatrix, [0, -15, 0]);
-		console.log(mvMatrix);
+		//console.log(mvMatrix);
 		mat4.translate(mvMatrix, [0, 0.0, -30.0]);
 
 		gl.disable(gl.DEPTH_TEST); // on enlève le z-buffer
@@ -452,7 +263,7 @@
 		Stars.texture = textureStars;
 		objects.push(Stars);
 		
-		Sun = new sphere(null,-1);
+		Sun = new sphere(null,"sun");
 		Sun.translate([0,0,0]);
 		Sun.scale([1,1,1]);
 		Sun.texture = textureSun;
@@ -623,128 +434,12 @@
         tick();
     }
 		
-	//interactions
-  	function handleMouseDown(event) {
-    	mouseDown = true;
-    	lastMouseX = event.clientX;
-    	lastMouseY = event.clientY;
-  	}
 
-  	function handleMouseUp(event) {
-    	mouseDown = false;
-  	}
-
-  	function handleMouseMove(event)
-  	{
-		if (!mouseDown) {
-		  return;
-		}
-		var newX = event.clientX;
-		var newY = event.clientY;
-		var sensi = 0.0006;
-
-		if(newX < lastMouseX)
-		{
-			camWidth+=degToRad(newX*sensi);
-		}
-
-		if(newX > lastMouseX)
-		{
-			camWidth-=degToRad(newX*sensi);
-		}
-
-		if(newY < lastMouseY)
-		{
-			camHeight+=degToRad(newY*sensi);
-		}
-
-		if(newY > lastMouseY)
-		{
-			camHeight-=degToRad(newY*sensi);
-		}
-
-
-		/*var newRotationMatrix = mat4.create();
-		mat4.identity(newRotationMatrix);
-
-		var deltaX = newX - lastMouseX;
-		mat4.rotate(newRotationMatrix, degToRad(deltaX / 7), [0, 1, 0]);
-
-		var deltaY = newY - lastMouseY;
-		mat4.rotate(newRotationMatrix, degToRad(deltaY / 7), [1, 0, 0]);
-
-		mat4.multiply(newRotationMatrix, userRotationMatrix, userRotationMatrix);*/
-
-		lastMouseX = newX;
-		lastMouseY = newY;
-
-    }
-
-    function handleWheel(event)
-    {
-		event.preventDefault();
-    	currentZoom*=1+(event.wheelDelta/Math.abs(event.wheelDelta))/10;
-    }
-
-	function handleKeyDown(event)
-    {
-    	//console.log(event.keyCode);
-    	event.preventDefault();
-    	switch(event.keyCode)
-    	{
-			case 37: //left
-					camX++;
-					Stars.translate([-0.02,0,0]);
-					break;
-			case 39: //right
-					camX--;
-					Stars.translate([0.02,0,0]);
-					break;
-			case 38: //down
-					camZ++;
-					Stars.translate([0,0,-0.02]);
-					break;
-			case 40: //forward
-					camZ--;
-					Stars.translate([0,0,0.02]);
-					break;
-			case 33: //pageUp
-					camHeight+=degToRad(1);
-					break;
-			case 34: //pageDown
-					camHeight-=degToRad(1);
-					break;
-			default:
-		}
-    }
 	
 
-	function drawCombo(list)
-	{
-		drawStyle = list.selectedIndex;
-	}
+	
 
-	function handleClick(checkMesh)
-	{
-		switch(checkMesh.value)
-		{
-			case 'triangle':
-			        toggleTriangle = checkMesh.checked;
-			        break;
-			case 'square':
-			        toggleSquare = checkMesh.checked;
-			        break;
-			case 'sphere':
-			        toggleSphere = checkMesh.checked;
-			        break;
-			    default:
-		}
-	}
-
-	function handleSlider1(sliderValue)
-	{
-		// à faire	
-	}
+	
 </script>
 
 </head>
