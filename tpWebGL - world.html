@@ -444,6 +444,7 @@
 		var distSum=1;
 		var distScale=1;
 		var diamScale=5;
+		var vitesseOrbit=0.5;
 
 	    Stars = new sphere(null);
 		Stars.translate([0,0,30]);
@@ -466,7 +467,7 @@
 		MercurePlanet.translate([(MercureDist*distScale)+distSum,0,0]);
 		MercurePlanet.scale([MercureDiam*diamScale,MercureDiam*diamScale,MercureDiam*diamScale]);
 		MercurePlanet.texture = textureMercure;
-		MercurePlanet.orbitParam = 47.5;
+		MercurePlanet.orbitParam = 47.5*vitesseOrbit;
 		MercurePlanet.rotatParam = 1/58.65;
 		objects.push(MercurePlanet);
 
@@ -476,7 +477,7 @@
 		VenusPlanet.translate([(VenusDist*distScale)+distSum,0,0]);
 		VenusPlanet.scale([VenusDiam*diamScale,VenusDiam*diamScale,VenusDiam*diamScale]);
 		VenusPlanet.texture = textureVenus;
-		VenusPlanet.orbitParam = 35;
+		VenusPlanet.orbitParam = 35*vitesseOrbit;
 		VenusPlanet.rotatParam = 1/243.01;
 		objects.push(VenusPlanet);
 
@@ -486,7 +487,7 @@
 		EarthPlanet.translate([(EarthDist*distScale)+distSum,0,0]);
 		EarthPlanet.scale([EarthDiam*diamScale,EarthDiam*diamScale,EarthDiam*diamScale]);
 		EarthPlanet.texture = textureEarth;
-		EarthPlanet.orbitParam = 29.8;
+		EarthPlanet.orbitParam = 29.8*vitesseOrbit;
 		EarthPlanet.rotatParam = 1;
 		objects.push(EarthPlanet);
 
@@ -496,7 +497,7 @@
 		MoonPlanet.translate([(MoonDist*distScale)+distSum,0,0]);
 		MoonPlanet.scale([MoonDiam*diamScale,MoonDiam*diamScale,MoonDiam*diamScale]);
 		MoonPlanet.texture = textureMoon;
-		MoonPlanet.orbitParam = 100;
+		MoonPlanet.orbitParam = 100*vitesseOrbit;
 		MoonPlanet.rotatParam = 1;
 		objects.push(MoonPlanet);
 
@@ -506,7 +507,7 @@
 		MarsPlanet.translate([(MarsDist*distScale)+distSum,0,0]);
 		MarsPlanet.scale([MarsDiam*diamScale,MarsDiam*diamScale,MarsDiam*diamScale]);
 		MarsPlanet.texture = textureMars;
-		MarsPlanet.orbitParam = 24.1;
+		MarsPlanet.orbitParam = 24.1*vitesseOrbit;
 		MarsPlanet.rotatParam = 1;
 		objects.push(MarsPlanet);
 
@@ -516,7 +517,7 @@
 		JupiterPlanet.translate([(JupiterDist*distScale)+distSum,0,0]);
 		JupiterPlanet.scale([JupiterDiam*diamScale,JupiterDiam*diamScale,JupiterDiam*diamScale]);
 		JupiterPlanet.texture = textureJupiter;
-		JupiterPlanet.orbitParam = 13;
+		JupiterPlanet.orbitParam = 13*vitesseOrbit;
 		JupiterPlanet.rotatParam = 1/0.4;
 		objects.push(JupiterPlanet);
 
@@ -526,7 +527,7 @@
 		SaturnePlanet.translate([(SaturneDist*distScale)+distSum,0,0]);
 		SaturnePlanet.scale([SaturneDiam*diamScale,SaturneDiam*diamScale,SaturneDiam*diamScale]);
 		SaturnePlanet.texture = textureSaturne;
-		SaturnePlanet.orbitParam = 10;
+		SaturnePlanet.orbitParam = 10*vitesseOrbit;
 		SaturnePlanet.rotatParam = 1/0.5;
 		objects.push(SaturnePlanet);
 
@@ -540,7 +541,7 @@
 		UranusPlanet.translate([(UranusDist*distScale)+distSum,0,0]);
 		UranusPlanet.scale([UranusDiam*diamScale,UranusDiam*diamScale,UranusDiam*diamScale]);
 		UranusPlanet.texture = textureUranus;
-		UranusPlanet.orbitParam = 7;
+		UranusPlanet.orbitParam = 7*vitesseOrbit;
 		UranusPlanet.rotatParam = 1/0.7;
 		objects.push(UranusPlanet);
 
@@ -550,7 +551,7 @@
 		NeptunePlanet.translate([(NeptuneDist*distScale)+distSum,0,0]);
 		NeptunePlanet.scale([NeptuneDiam*diamScale,NeptuneDiam*diamScale,NeptuneDiam*diamScale]);
 		NeptunePlanet.texture = textureNeptune;
-		NeptunePlanet.orbitParam = 5.5;
+		NeptunePlanet.orbitParam = 5.5*vitesseOrbit;
 		NeptunePlanet.rotatParam = 1/0.8;
 		objects.push(NeptunePlanet);
 
